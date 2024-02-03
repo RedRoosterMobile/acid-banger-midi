@@ -4,6 +4,11 @@
   https://creativecommons.org/licenses/by/4.0/
 */
 
+declare global {
+    interface Window {
+      ma: any;
+    }
+  }
 import {NumericParameter} from "./interface.js";
 import {FullNote, textNoteToNumber} from "./audio.js";
 
@@ -28,6 +33,8 @@ export function Midi(midiAccess: any, noteLength: number = 100) {
     function getOutputNames(): string[] {
         var devices: string[] = [];
         devices.push("(None)");
+        console.log(midiAccess)
+        window['ma']=midiAccess;
 
         for (var entry of midiAccess.outputs) {
             var output = entry[1];
@@ -37,11 +44,25 @@ export function Midi(midiAccess: any, noteLength: number = 100) {
         return devices;
     }
 
+    // not really working, return null
     function getOutput(portID: string | number) {
         if (typeof(portID) === 'number') {
             if (portID == 0)
                 return null;
             var key = Array.from(midiAccess.outputs.keys())[portID-1];
+            return midiAccess.outputs.get(key);
+        }
+        else {
+            return midiAccess.outputs.get(portID);
+        }
+    }
+
+    function getOutputFixed(portID: string | number) {
+        //console.log(midiAccess.outputs, midiAccess.outputs.get(portID)), portID, typeof(portID) === 'number';
+        if (typeof(portID) === 'number') {
+            //if (portID == 0)
+            //    return null;
+            var key = Array.from(midiAccess.outputs.keys())[1];
             return midiAccess.outputs.get(key);
         }
         else {
@@ -95,15 +116,31 @@ export function Midi(midiAccess: any, noteLength: number = 100) {
         }
 
         function controlChange(channel: number, value: number, minValue: number = 32, maxValue: number = 96) {
+            
             if (channel < 0)
                 return;
+            
 			value = Math.max(minValue, value);
 			value = Math.min(maxValue, value);
+            //console.log("control change", channel ,value, portID);
             const controlChangeMessage = [0xB0 + midiCh, channel, value];
-            var output = getOutput(portID);
+            var output = getOutputFixed(portID);
             if (output) {
-                //console.log("Sending MIDI message: ", controlChangeMessage);
-                output.send( controlChangeMessage );
+                const ccParam = controlChangeMessage[1];
+
+                // phosycon 2
+                
+                
+                // 66 accent OK
+                // 81 distortion OK
+                // 80 decay OK
+                // 74 cutoff OK
+                // 75 resonance OK
+                // 77 envmod OK
+                //if (ccParam == 66) {
+                    //console.log("Sending MIDI message: ", controlChangeMessage);
+                    output.send( controlChangeMessage );
+                //}
             }
         }
 

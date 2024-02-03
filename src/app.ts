@@ -23,7 +23,7 @@ import {
 
 
 export const midiControlPresets = new Map([
-    ["(Default)", {
+    /*["(Default)", {
         pitchOffset:   0,
         //absVolume:    63,
         //triggerCC:    -1,
@@ -33,6 +33,17 @@ export const midiControlPresets = new Map([
         envModCC:     -1,
         decayCC:      -1,
         distortionCC: -1,
+    }],*/
+    ["(Default)", { // ableton
+        pitchOffset:   0,
+        //absVolume:    63,
+        //triggerCC:    -1,
+		accentCC:     66,
+        cutoffCC:     74,  // Filter frequency
+        resonanceCC:  75,  // Filter resonance
+        envModCC:     77,  // Filter env depth
+        decayCC:      80,  // Amp decay time
+        distortionCC: 81,  // Amp overdrive
     }],
     ["Elektron - Digitakt", {
         pitchOffset:   0,
